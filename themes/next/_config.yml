@@ -38,7 +38,7 @@ custom_file_path:
 # Schemes
 #scheme: Muse
 scheme: Mist
-#cheme: Pisces
+#scheme: Pisces
 #scheme: Gemini
 
 # Dark Mode
@@ -130,7 +130,7 @@ sidebar:
   #  - always  expand for all pages automatically.
   #  - hide    expand only when click on the sidebar toggle icon.
   #  - remove  totally remove sidebar including sidebar toggle.
-  display: remove
+  display: hide
 
   # Sidebar padding in pixels.
   padding: 18
