@@ -432,7 +432,7 @@ font:
   global:
     external: false
     family: Lato,pingfang sc,microsoft yahei,sans-serif;
-    size:
+    size: 
 
   # Font settings for site title (.site-title).
   title:
