@@ -11,7 +11,7 @@ categories:
 Vue 從模板傳值到 CSS 偽元素 content 內容
 
 <!-- more -->
-
+------
 ## 使用 Attr()
 
 首先在模板定義`data-*`參數，並使用 Vue 模板傳入對應值

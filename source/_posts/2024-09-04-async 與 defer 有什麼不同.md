@@ -8,10 +8,10 @@ categories:
 ---
 
 
-「HTML 的 `<script>`當中，`async`與`defer`有什麼差別？」
+HTML 的 `<script>`當中，`async`與`defer`有什麼差別？
 
 <!-- more -->
-
+------
 
 
 HTML 在生成 DOM 時由上到下進行解析並生成，當遇到`<script>`標籤時，則會暫停載入 DOM 的生成，開始執行`<script>`腳本，執行完畢後才會繼續生成 DOM 。
@@ -50,3 +50,5 @@ HTML 在生成 DOM 時由上到下進行解析並生成，當遇到`<script>`標
 阻塞行為：儘管`async`和`defer`都不會阻塞 HTML 的解析，但`async`屬性的腳本在執行時會暫停 HTML 的解析。因此，在大量`async`腳本並行加載的情況下，可能會對頁面加載速度產生影響。
 
 兼容性與支援度：大多數現代瀏覽器都完全支援`async`和`defer`屬性，但在較老的瀏覽器中可能會有一些兼容性問題。因此，在使用這些屬性時，也需要考慮目標用戶的瀏覽器版本。
+
+[ < script >的 async 與 defer 有什麼不同？](https://www.explainthis.io/zh-hant/swe/fe-script-async-defer-difference)

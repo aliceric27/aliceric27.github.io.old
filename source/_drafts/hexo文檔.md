@@ -6,7 +6,7 @@ tags:
 https://theme-next.iissnan.com/
 
 [Hexo + NexT 的特殊標籤 | Miles' Blog (mileschou.me)](https://mileschou.me/blog/hexo-next-note-1/)
-
+[](https://blog.cyida.com/2023/hexo-next-tags.html)
 #### 使用方式
 
 ```html
@@ -63,4 +63,97 @@ https://theme-next.iissnan.com/
 
 <!-- 标签别名 -->
 {% cq %} blah blah blah {% endcq %}
+```
+
+
+```
+{% button #, Text %}
+```
+
+- url : Absolute or relative path to URL.
+- text : Button text. Required if no icon specified.
+- icon : Font Awesome icon name. Required if no text specified.
+- [class] : Optional parameter. Font Awesome class(es): fa-fw | fa-lg | fa-2x | fa-3x | fa-4x | fa-5x
+- [title] : Optional parameter. Tooltip at mouseover.
+
+1. 文字标签按钮：
+
+```
+{% btn #, Text %}{% btn #, Text & Title,, Title %}
+```
+
+2. 图标按钮：
+
+```
+{% btn #,, home fa-5x %}
+{% btn #,, home fa-4x %}
+{% btn #,, home fa-3x %}
+{% btn #,, home fa-2x %}
+{% btn #,, home fa-lg %}
+{% btn #,, home %}
+```
+
+3. 文字 & 图标按钮
+
+```
+{% btn #, Text & Icon (buggy), home %}
+{% btn #, Text & Icon (fixed width), home fa-fw %}
+
+```
+
+```
+{% btn #, Text & Large Icon, home fa-fw fa-lg %}
+{% btn #, Text & Large Icon & Title, home fa-fw fa-lg, Title %}
+```
+
+4. 在文字中使用
+
+```
+Lorem {% btn #, Lorem, home fa-fw fa-lg %} ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident {% btn #, Ipsum, home fa-fw fa-lg %}, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+```
+5. 在其它标签中使用按钮
+
+```
+{% note info %}
+{% btn #, Text & Icon, home fa-fw %}
+
+{% btn #,, home, Title %}{% btn #, Text %}
+
+[Link](#)
+{% endnote %}
+
+```
+6. 按钮框设计
+
+```
+{% btn #,, heading %}{% btn #,, fab fa-edge %}{% btn #,, times %}{% btn #,, circle-notch %}
+{% btn #,, italic %}{% btn #,, fab fa-scribd %}
+{% btn #,, fab fa-google %}{% btn #,, fab fa-chrome %}{% btn #,, fab fa-opera %}{% btn #,, gem fa-rotate-270 %}
+
+```
+7. 按钮相对 URL 链接
+```
+<div class="text-center">{% btn #, Previous Chapter, arrow-left fa-fw fa-lg, Previous Chapter (Full Image) %} {% btn #, Next Chapter, arrow-right fa-fw fa-lg, Next Chapter (Label) %}</div>
+
+```
+
+8. 按钮绝对 URL 链接
+```
+<div class="text-center">{% btn https://github.com, GitHub, fab fa-github fa-fw fa-lg, GitHub %}</div>
+
+```
+
+四、Label 标注
+
+```
+Lorem {% label @ipsum %} {% label success@dolor sit %} amet, consectetur {% label success@adipiscing elit, %} sed {% label info@do eiusmod %} tempor incididunt ut labore et dolore magna aliqua.
+
+Ut enim *{% label warning @ad %}* minim veniam, quis **{% label danger@nostrud %}** exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+
+Duis aute irure dolor in reprehenderit in voluptate ~~{% label default @velit %}~~ <mark>esse</mark> cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+
 ```
