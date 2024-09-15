@@ -27,4 +27,6 @@ Vue 從模板傳值到 CSS 偽元素 content 內容
 }
 ```
 
+------
+
 [什麼是 HTML 5 中的資料屬性（data-* attribute）](https://pjchender.dev/html/html-data-attribute/)
