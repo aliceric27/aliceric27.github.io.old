@@ -1478,6 +1478,13 @@ hexo-i18n@^1.0.0:
   dependencies:
     sprintf-js "^1.0.3"
 
+hexo-lazyload-image@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/hexo-lazyload-image/-/hexo-lazyload-image-1.1.2.tgz#487e3f299f2e2e53590fbc0e776331f1a3cc1c17"
+  integrity sha512-g1oHnXwQG3Rf02WwaosEvVF/xqX4VE7FT8nXNVZJ0n20Cv12OmYP1OKbMp4IMbnBaHyuPvv4E48X5LU5UZWmTg==
+  dependencies:
+    uglify-js "^3.17.4"
+
 hexo-log@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/hexo-log/-/hexo-log-2.0.0.tgz"
@@ -3168,6 +3175,11 @@ type-check@~0.3.2:
   integrity sha512-ZCmOJdvOWDBYJlzAoFkC+Q0+bUyEOS1ltgp1MGU03fqHG+dbi9tBFU2Rd9QKiDZFAYrhPh2JUf7rZRIuHRKtOg==
   dependencies:
     prelude-ls "~1.1.2"
+
+uglify-js@^3.17.4:
+  version "3.19.3"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.19.3.tgz#82315e9bbc6f2b25888858acd1fff8441035b77f"
+  integrity sha512-v3Xu+yuwBXisp6QYTcH4UbH+xYJXqnq2m/LtQVWKWzYc1iehYnLixoQDN9FH6/j9/oybfd6W9Ghwkl8+UMKTKQ==
 
 unbzip2-stream@^1.0.9:
   version "1.4.3"

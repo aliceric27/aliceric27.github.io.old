@@ -106,6 +106,16 @@ deploy:
 - type: git # 使用 Git 部署
   repo: https://github.com/aliceric27/aliceric27.github.io.git # 你的儲存庫 clone
   branch: gh-pages # 儲存庫分支
-  message: "Update blog - 2024-10-11 17:43:15" # Commit 訊息
+  message: "Update blog - 2024-10-18 14:15:30" # Commit 訊息
 
 command: bash deploy.sh
+
+#hexo-lazyload-image
+## https://github.com/Troy-Yang/hexo-lazyload-image
+
+lazyload:
+  enable: true
+  onlypost: true # optional
+  loadingImg: /images/loading.svg # optional eg ./images/loading.gif
+  isSPA: true # optional
+  preloadRatio: 3 # optional, default is 1
