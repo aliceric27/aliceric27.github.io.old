@@ -45,12 +45,12 @@ Callback Queue 又分為 Macrotask Queue 和 Microtask Queue
 
 每個 Macrotask 執行結束後會先將 Microtask queue 中的任務全部執行完，才會繼續執行瀏覽器渲染跟其他 Macrotask。
 
-{% note info%}舉例
+> 舉例
 這個執行印出答案為 1,3,4,2
 Macrotask​ 為 console.log(1)
 Microtask queue 為 Promise.then()
 Macrotask Queue 為 setTimeout()
-{% endnote %}
+
 
 ```js
 

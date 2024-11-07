@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="解釋 JS 中的 Even Loop 機制">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JS 的 Even Loop 是什麼？">
+<meta property="og:url" content="http://example.com/2024/09/10/2024-09-10-js-event-loop/index.html">
+<meta property="og:site_name" content="Wei&#39;s Blog">
+<meta property="og:description" content="解釋 JS 中的 Even Loop 機制">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://gcdeng.com/assets/images/Screen_Shot_2021-05-16_at_10.37.11_PM-82dd3d3de0ac10d80cccff54a783ea5e.png">
+<meta property="article:published_time" content="2024-09-10T09:22:10.000Z">
+<meta property="article:modified_time" content="2024-11-07T17:05:23.273Z">
+<meta property="article:author" content="Wei">
+<meta property="article:tag" content="Front-end">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gcdeng.com/assets/images/Screen_Shot_2021-05-16_at_10.37.11_PM-82dd3d3de0ac10d80cccff54a783ea5e.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/favicon.ico" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico">
+        
+      
+    
+    <!-- title -->
+    <title>JS 的 Even Loop 是什麼？</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目錄"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目錄"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="頂部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首頁</a></li><!--
+     --><!--
+       --><li><a href="/about/">關於</a></li><!--
+     --><!--
+       --><li><a href="/archives/">文章</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">項目</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2024/09/15/2024-09-15-this/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2024/09/03/2024-09-03-Vue%20%E5%BE%9E%E6%A8%A1%E6%9D%BF%E5%82%B3%E5%80%BC%E5%88%B0%20CSS%20%E5%81%BD%E5%85%83%E7%B4%A0%20content%20%E5%85%A7%E5%AE%B9/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="回到頁首" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">回到頁首</span>
+      <span id="i-share" class="info" style="display:none;">分享</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/09/10/2024-09-10-js-event-loop/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/09/10/2024-09-10-js-event-loop/&text=JS 的 Even Loop 是什麼？"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/09/10/2024-09-10-js-event-loop/&title=JS 的 Even Loop 是什麼？"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/09/10/2024-09-10-js-event-loop/&is_video=false&description=JS 的 Even Loop 是什麼？"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=JS 的 Even Loop 是什麼？&body=Check out this article: http://example.com/2024/09/10/2024-09-10-js-event-loop/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/09/10/2024-09-10-js-event-loop/&title=JS 的 Even Loop 是什麼？"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/09/10/2024-09-10-js-event-loop/&title=JS 的 Even Loop 是什麼？"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/09/10/2024-09-10-js-event-loop/&title=JS 的 Even Loop 是什麼？"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/09/10/2024-09-10-js-event-loop/&title=JS 的 Even Loop 是什麼？"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/09/10/2024-09-10-js-event-loop/&name=JS 的 Even Loop 是什麼？&description=&lt;p&gt;解釋 JS 中的 Even Loop 機制&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/09/10/2024-09-10-js-event-loop/&t=JS 的 Even Loop 是什麼？"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Macrotask-Queue%E3%80%81Microtask-Queue"><span class="toc-number">2.</span> <span class="toc-text">Macrotask Queue、Microtask Queue</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Macrotask-Queue"><span class="toc-number">2.1.</span> <span class="toc-text">Macrotask Queue</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Microtask-Queue%E2%80%8B"><span class="toc-number">2.2.</span> <span class="toc-text">Microtask Queue​</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        JS 的 Even Loop 是什麼？
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Wei</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-09-10T09:22:10.000Z" class="dt-published" itemprop="datePublished">2024-09-10</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/Front-end/">Front-end</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/Front-end/" rel="tag">Front-end</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>解釋 JS 中的 Even Loop 機制</p>
+<span id="more"></span>
+<hr>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>簡單來說 JS 是單執行緒的機制，為了支援非同步的任務，而在<strong>JS引擎</strong>中引入的一個機制</p>
+<p>機制內分為不同區塊 Stack、Queue、Heap</p>
+<ul>
+<li>JS 程式碼在執行時會依序將任務放入 Stack ，中並按照順序執行。</li>
+<li>當一個任務呼叫為<strong>非同步</strong>任務時則會放在 Queue 內，待 Stack 內的任務完成後，會將 Queue 的任務放到 Stack 內最後按順序執行</li>
+</ul>
+<h2 id="Macrotask-Queue、Microtask-Queue"><a href="#Macrotask-Queue、Microtask-Queue" class="headerlink" title="Macrotask Queue、Microtask Queue"></a>Macrotask Queue、Microtask Queue</h2><p>Callback Queue 又分為 Macrotask Queue 和 Microtask Queue</p>
+<h3 id="Macrotask-Queue"><a href="#Macrotask-Queue" class="headerlink" title="Macrotask Queue"></a>Macrotask Queue</h3><ul>
+<li>從<code>&lt;script src=&quot;...&quot;&gt;</code>外部下載的 script</li>
+<li>DOM event handlers，例如 mousemove event 的 callback function handler</li>
+<li>各種 Web APIs，例如 setTimeout 的 callback function</li>
+<li>ajax callback function</li>
+</ul>
+<p><img src="https://gcdeng.com/assets/images/Screen_Shot_2021-05-16_at_10.37.11_PM-82dd3d3de0ac10d80cccff54a783ea5e.png" alt="marcotask"></p>
+<h3 id="Microtask-Queue​"><a href="#Microtask-Queue​" class="headerlink" title="Microtask Queue​"></a>Microtask Queue​</h3><ul>
+<li>promise <code>.then/catch/finally</code> 中的 callback function</li>
+<li><code>queueMicrotask(func)</code> 中的 func</li>
+</ul>
+<p>簡單來說，像是 Promise.then 在非同步任務中是屬於 Microtask Queue​ ，在 Even Loop 則會被分配到優先執行的 Microtask Queue​</p>
+<p>每個 Macrotask 執行結束後會先將 Microtask queue 中的任務全部執行完，才會繼續執行瀏覽器渲染跟其他 Macrotask。</p>
+<blockquote>
+<p>舉例<br>這個執行印出答案為 1,3,4,2<br>Macrotask​ 為 console.log(1)<br>Microtask queue 為 Promise.then()<br>Macrotask Queue 為 setTimeout()</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">setTimeout</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">2</span>);</span><br><span class="line">&#125;, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="title class_">Promise</span>.<span class="title function_">resolve</span>()</span><br><span class="line">  .<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">3</span>);</span><br><span class="line">  &#125;)</span><br><span class="line">  .<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">4</span>);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<hr>
+<p>附上更詳細的解釋，有影片和圖片解釋寫的非常完整</p>
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=z4S6ZxRD2rA&pp=ygUKRXZlbnQgTG9vcA==">JavaScript Event Loop解說：單執行緒還能異步運算？</a></p>
+<p><a target="_blank" rel="noopener" href="https://gcdeng.com/series/Javascript/javascript-deep-dive-into-event-loop">深入了解事件迴圈(Event Loop)，Macrotask跟Microtask是什麼？</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.explainthis.io/zh-hant/swe/what-is-event-loop">請說明瀏覽器中的事件循環 (Event Loop)</a></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">首頁</a></li>
+        
+          <li><a href="/about/">關於</a></li>
+        
+          <li><a href="/archives/">文章</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/probberechts">項目</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Macrotask-Queue%E3%80%81Microtask-Queue"><span class="toc-number">2.</span> <span class="toc-text">Macrotask Queue、Microtask Queue</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Macrotask-Queue"><span class="toc-number">2.1.</span> <span class="toc-text">Macrotask Queue</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Microtask-Queue%E2%80%8B"><span class="toc-number">2.2.</span> <span class="toc-text">Microtask Queue​</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/09/10/2024-09-10-js-event-loop/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/09/10/2024-09-10-js-event-loop/&text=JS 的 Even Loop 是什麼？"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/09/10/2024-09-10-js-event-loop/&title=JS 的 Even Loop 是什麼？"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/09/10/2024-09-10-js-event-loop/&is_video=false&description=JS 的 Even Loop 是什麼？"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=JS 的 Even Loop 是什麼？&body=Check out this article: http://example.com/2024/09/10/2024-09-10-js-event-loop/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/09/10/2024-09-10-js-event-loop/&title=JS 的 Even Loop 是什麼？"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/09/10/2024-09-10-js-event-loop/&title=JS 的 Even Loop 是什麼？"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/09/10/2024-09-10-js-event-loop/&title=JS 的 Even Loop 是什麼？"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/09/10/2024-09-10-js-event-loop/&title=JS 的 Even Loop 是什麼？"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/09/10/2024-09-10-js-event-loop/&name=JS 的 Even Loop 是什麼？&description=&lt;p&gt;解釋 JS 中的 Even Loop 機制&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/09/10/2024-09-10-js-event-loop/&t=JS 的 Even Loop 是什麼？"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 選單</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> 文章目錄</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 頁首</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2024
+    Wei
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首頁</a></li><!--
+     --><!--
+       --><li><a href="/about/">關於</a></li><!--
+     --><!--
+       --><li><a href="/archives/">文章</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">項目</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"複製到剪貼簿！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "複製成功！");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
