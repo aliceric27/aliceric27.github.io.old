@@ -1,5 +1,5 @@
 ---
-title: 使用CloudFlare Work架設telegram bot
+title: 架設 Telegram Bot 的免費方案
 date: 2024-11-07 21:20:20
 tags:
   - [Tools]
@@ -8,10 +8,11 @@ categories:
 ---
 
 
-使用 CloudFlare 免費提供的 Workers 服務架設 Telegram Bot
-每個月有 10 萬次請求，足夠應付一般使用
+使用 CloudFlare 免費提供的 Worker 服務作為 Telegram Bot 的 Server
 
 <!-- more -->
+
+![image.7sn87x1wid.webp](https://github.com/aliceric27/picx-images-hosting/raw/master/image.7sn87x1wid.webp)
 
 ------
 
