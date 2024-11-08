@@ -1,4 +1,26 @@
 @import url("//at.alicdn.com/t/font_2266068_otkvzqnxk0g.css");
+.header-widget {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  overflow: hidden;
+  width: 100vw;
+  height: 42px;
+  padding: 0 15px;
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  background: var(--top-bar-bg-color);
+}
+.header-widget a {
+  margin: 0 8px;
+  font-weight: bold;
+  color: var(--primary-text-color);
+}
+.header-widget h3 {
+  font-weight: bold;
+}
+
 :root.appearance-light {
   --primary-bg-color: #fff;
   --second-bg-color: #fff;
@@ -138,26 +160,4 @@
 :root body > footer .sns-container .iconfont {
   margin: 0 5px;
   font-size: 30px;
-}
-
-.header-widget {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 100;
-  overflow: hidden;
-  width: 100vw;
-  height: 42px;
-  padding: 0 15px;
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  background: var(--top-bar-bg-color);
-}
-.header-widget a {
-  margin: 0 8px;
-  font-weight: bold;
-  color: var(--primary-text-color);
-}
-.header-widget h3 {
-  font-weight: bold;
 }

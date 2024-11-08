@@ -1596,13 +1596,12 @@ a.box:active {
   width: auto;
 }
 .container.is-fluid {
-  /* max-width: none !important; */
+  max-width: none !important;
   padding-left: 32px;
   padding-right: 32px;
   width: 100%;
-  max-width: 900px;
 }
-/* @media screen and (min-width: 1024px) {
+@media screen and (min-width: 1024px) {
   .container {
     max-width: 960px;
   }
@@ -1626,7 +1625,7 @@ a.box:active {
   .container:not(.is-max-desktop):not(.is-max-widescreen) {
     max-width: 1344px;
   }
-} */
+}
 
 .content li + li {
   margin-top: 0.25em;
