@@ -1,0 +1,61 @@
+<!DOCTYPE html><html class="appearance-auto" lang="zh-TW"><head><meta charset="UTF-8"><title>JS 的 Even Loop 是什麼？</title><meta name="description" content="NaN === Not a Nerd"><meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, initial-scale=1"><!-- Google Analytics --><!-- End Google Analytics -->
+<!-- Baidu Analytics --><!-- End Baidu Analytics --><link rel="icon" href="/images/favicon.ico"><link rel="stylesheet" href="/style/common/bulma.css"><link rel="stylesheet" href="/style/base.css"><link rel="stylesheet" href="/style/common/helper.css"><script src="/js/common.js"></script><link rel="stylesheet" href="/style/post.css"><link rel="stylesheet" href="/style/themes/highlight-theme-light.css"><link rel="stylesheet" href="/style/common/jquery.fancybox.min.css"><script src="/js/highlight.pack.js"></script><meta name="description" content="解釋 JS 中的 Even Loop 機制
+
+
+概述簡單來說 JS 是單執行緒的機制，為了支援非同步的任務，而在JS引擎中引入的一個機制
+機制內分為不同區塊 Stack、Queue、Heap
+
+JS 程式碼在執行時會依序將任務放入 Stack ，中並按照順序執行。
+當一個任務呼叫為非同步任務時則會放在 Queue 內，待 Stack 內的任務完成後，會將 Queue 的任務放到 Stack 內最後按順序執行
+
+Macrotask Queue、Microtask QueueCallback Queue 又分為 Macrotask Queue 和 Microtask Queue
+Macrotask Queue
+從&amp;lt;script src=&amp;quot;...&amp;quot;&amp;gt;外部下載的 script
+DOM.."><meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="Wei's Blog" type="application/atom+xml">
+</head><body class="is-flex is-flex-direction-column"><header class="header-widget is-flex-shrink-0 is-hidden-mobile"><div class="container is-fullhd is-flex is-justify-content-space-between is-align-items-center is-full-height"><section class="is-hidden-mobile is-flex-shrink-0"><h2><a href="/">Wei's blog</a></h2></section><h3 class="is-hidden-mobile is-family-serif is-full-height is-flex is-align-items-center is-flex-shrink-0"><div class="is-full-height" id="postTopic"><p class="is-full-height is-flex-shrink-0 is-flex is-align-items-center is-justify-content-center">JS 的 Even Loop 是什麼？</p><p class="is-full-height is-flex-shrink-0 is-flex is-align-items-center is-justify-content-center">點擊返回頂部</p></div></h3><aside class="is-flex-shrink-0"><h3 class="is-inline-block"><a href="/">首頁</a></h3><h3 class="is-inline-block"><a href="/about">關於</a></h3><h3 class="is-inline-block"><a href="/archives">歸檔</a></h3></aside></div></header><header class="is-flex header-widget is-flex-shrink-0 is-align-items-center is-justify-content-center is-hidden-tablet"><h3 class="is-inline-block"><a href="/">首頁</a></h3><h3 class="is-inline-block"><a href="/about">關於</a></h3><h3 class="is-inline-block"><a href="/archives">歸檔</a></h3></header><main><main class="container is-max-widescreen content section post-page pt-4 px-4"><div class="columns is-flex-desktop is-justify-content-center is-flex-direction-row-reverse"><div class="column is-3 is-hidden-mobile"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Macrotask-Queue%E3%80%81Microtask-Queue"><span class="toc-text">Macrotask Queue、Microtask Queue</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Macrotask-Queue"><span class="toc-text">Macrotask Queue</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Microtask-Queue%E2%80%8B"><span class="toc-text">Microtask Queue​</span></a></li></ol></li></ol></div><div class="column is-9"><header class="my-4"><a href="/tags/Front-end"><i class="tag post-item-tag">Front-end</i></a></header><h1 class="mt-0 mb-1 is-family-serif" id="postTitle">JS 的 Even Loop 是什麼？</h1><time class="has-text-grey" datetime="2024-09-10T09:22:10.000Z">2024-09-10</time><article class="mt-2 post-content"><p>解釋 JS 中的 Even Loop 機制</p>
+<span id="more"></span>
+<hr>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>簡單來說 JS 是單執行緒的機制，為了支援非同步的任務，而在<strong>JS引擎</strong>中引入的一個機制</p>
+<p>機制內分為不同區塊 Stack、Queue、Heap</p>
+<ul>
+<li>JS 程式碼在執行時會依序將任務放入 Stack ，中並按照順序執行。</li>
+<li>當一個任務呼叫為<strong>非同步</strong>任務時則會放在 Queue 內，待 Stack 內的任務完成後，會將 Queue 的任務放到 Stack 內最後按順序執行</li>
+</ul>
+<h2 id="Macrotask-Queue、Microtask-Queue"><a href="#Macrotask-Queue、Microtask-Queue" class="headerlink" title="Macrotask Queue、Microtask Queue"></a>Macrotask Queue、Microtask Queue</h2><p>Callback Queue 又分為 Macrotask Queue 和 Microtask Queue</p>
+<h3 id="Macrotask-Queue"><a href="#Macrotask-Queue" class="headerlink" title="Macrotask Queue"></a>Macrotask Queue</h3><ul>
+<li>從<code>&lt;script src=&quot;...&quot;&gt;</code>外部下載的 script</li>
+<li>DOM event handlers，例如 mousemove event 的 callback function handler</li>
+<li>各種 Web APIs，例如 setTimeout 的 callback function</li>
+<li>ajax callback function</li>
+</ul>
+<p><img src="https://gcdeng.com/assets/images/Screen_Shot_2021-05-16_at_10.37.11_PM-82dd3d3de0ac10d80cccff54a783ea5e.png" alt="marcotask"></p>
+<h3 id="Microtask-Queue​"><a href="#Microtask-Queue​" class="headerlink" title="Microtask Queue​"></a>Microtask Queue​</h3><ul>
+<li>promise <code>.then/catch/finally</code> 中的 callback function</li>
+<li><code>queueMicrotask(func)</code> 中的 func</li>
+</ul>
+<p>簡單來說，像是 Promise.then 在非同步任務中是屬於 Microtask Queue​ ，在 Even Loop 則會被分配到優先執行的 Microtask Queue​</p>
+<p>每個 Macrotask 執行結束後會先將 Microtask queue 中的任務全部執行完，才會繼續執行瀏覽器渲染跟其他 Macrotask。</p>
+<blockquote>
+<p>舉例<br>這個執行印出答案為 1,3,4,2<br>Macrotask​ 為 console.log(1)<br>Microtask queue 為 Promise.then()<br>Macrotask Queue 為 setTimeout()</p>
+</blockquote>
+<pre><code class="js">
+console.log(1);
+
+setTimeout(function () &#123;
+  console.log(2);
+&#125;, 0);
+
+Promise.resolve()
+  .then(function () &#123;
+    console.log(3);
+  &#125;)
+  .then(function () &#123;
+    console.log(4);
+  &#125;);
+</code></pre>
+<hr>
+<p>附上更詳細的解釋，有影片和圖片解釋寫的非常完整</p>
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=z4S6ZxRD2rA&pp=ygUKRXZlbnQgTG9vcA==">JavaScript Event Loop解說：單執行緒還能異步運算？</a></p>
+<p><a target="_blank" rel="noopener" href="https://gcdeng.com/series/Javascript/javascript-deep-dive-into-event-loop">深入了解事件迴圈(Event Loop)，Macrotask跟Microtask是什麼？</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.explainthis.io/zh-hant/swe/what-is-event-loop">請說明瀏覽器中的事件循環 (Event Loop)</a></p>
+</article><section class="jump-container is-flex is-justify-content-space-between my-6"><!-- em is empty placeholder--><a class="button is-default" href="/2024/09/15/2024-09-15-this/" title="這個 this 到底是什麼？"><i class="iconfont icon-prev mr-2 has-text-grey"></i><span class="has-text-weight-semibold">上一頁: 這個 this 到底是什麼？</span></a><a class="button is-default" href="/2024/09/03/2024-09-03-Vue%20%E5%BE%9E%E6%A8%A1%E6%9D%BF%E5%82%B3%E5%80%BC%E5%88%B0%20CSS%20%E5%81%BD%E5%85%83%E7%B4%A0%20content%20%E5%85%A7%E5%AE%B9/" title="使用 Vue 設定偽元素 content"><span class="has-text-weight-semibold">下一頁: 使用 Vue 設定偽元素 content</span><i class="iconfont icon-next ml-2 has-text-grey"></i></a></section></div></div></main></main><footer class="is-flex is-flex-direction-column is-align-items-center is-flex-shrink-0 is-family-serif"><section class="sns-container"><a title="twitter" target="_blank" rel="noopener nofollow" href="//twitter.com//"><i class="iconfont icon-twitter"></i></a><!-- Github--><a title="github" target="_blank" rel="noopener nofollow" href="//github.com/aliceric27"><i class="iconfont icon-github"></i></a><!-- Ins--><a title="instagram" target="_blank" rel="noopener nofollow" href="//www.instagram.com//"><i class="iconfont icon-ins"></i></a><!-- RSS--><!-- 知乎--><!-- 领英--><!-- 脸书--><a title="facebook" target="_blank" rel="noopener nofollow" href="//www.facebook.com//"><i class="iconfont icon-tian7_facebook"></i></a></section><p><span>Copyright ©</span><span> Wei 2024</span></p><div class="is-flex is-justify-content-center is-flex-wrap-wrap"><p>Powered by Hexo &verbar;&nbsp;</p><p class="is-flex is-justify-content-center"><a title="Hexo theme author" target="_blank" rel="noopener" href="//github.com/haojen">Theme by Haojen&nbsp;</a></p><div style="margin-top: 2px"><a class="github-button" title="github-button" target="_blank" rel="noopener" href="https://github.com/haojen/hexo-theme-Claudia" data-color-scheme="no-preference: light; light: light; dark: dark;" data-show-count="true"></a></div></div><div><span></span></div></footer><script async defer src="https://buttons.github.io/buttons.js"></script><script src="/js/jquery-3.6.1.min.js"></script><script src="/js/jquery-fancybox.min.js"></script><script src="/js/img_zoom.js"></script><script src="/js/post.js"></script></body></html>
