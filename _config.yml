@@ -46,15 +46,15 @@ future: true
 syntax_highlighter: ''
 highlight:
   enable: false
-  line_number: false
-  auto_detect: false
-  tab_replace: ''
-  wrap: false
-  hljs: false
+  line_number: true
+  auto_detect: true
+  tab_replace: ' ' 
+  wrap: true
+  hljs: true
 prismjs:
   enable: false
   preprocess: false
-  line_number: false
+  line_number: true
   tab_replace: ''
 
 # Home page setting
@@ -107,4 +107,4 @@ deploy:
 - type: git # 使用 Git 部署
   repo: https://github.com/aliceric27/aliceric27.github.io.git # 你的儲存庫 clone
   branch: gh-pages # 儲存庫分支
-  message: "Update blog - 2024-11-08 13:31:51" # Commit 訊息
+  message: "Update blog - 2024-11-08 14:25:58" # Commit 訊息
